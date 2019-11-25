@@ -4,7 +4,7 @@ const body = (handle) => async (ctx) => {
       const data = await handle(ctx);
       ctx.body = data;
     } catch (error) {
-      if (typeof error.status === 'number') {
+      if (typeof error.status === 'number' || typeof error.statusCode === 'number') {
         throw error;
       } else {
         console.error(error);

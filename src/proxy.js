@@ -18,7 +18,10 @@ const proxy = (handle) => {
         passThrough.headersSent = true;
       };
       passThrough.socket = ctx.socket;
-      httpForward(options, passThrough);
+      httpForward({
+        method: ctx.method,
+        ...options,
+      }, passThrough);
       ctx.body = passThrough;
     };
   }
@@ -41,6 +44,7 @@ const proxy = (handle) => {
           : `${handle}${ctx.originalUrl}`,
         body: ctx.req,
         headers: _.omit(ctx.headers, ['host', 'referer']),
+        method: ctx.method,
       }, passThrough);
       ctx.body = passThrough;
     };

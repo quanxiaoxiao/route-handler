@@ -6,6 +6,9 @@ const file = (handle) => {
   const type = typeof handle;
   if (type === 'string') {
     return (ctx) => {
+      if (!path.isAbsolute(handle)) {
+        ctx.throw(500, 'path is not absolute');
+      }
       ctx.type = path.extname(handle);
       ctx.body = fs.createReadStream(handle);
     };
@@ -14,7 +17,10 @@ const file = (handle) => {
     return async (ctx) => {
       const pathname = await handle(ctx);
       if (!_.isString(pathname)) {
-        ctx.trhow(500);
+        ctx.throw(500);
+      }
+      if (!path.isAbsolute(pathname)) {
+        ctx.throw(500, 'path is not absolute');
       }
       ctx.type = path.extname(pathname);
       ctx.body = fs.createReadStream(pathname);
