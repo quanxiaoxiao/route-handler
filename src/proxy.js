@@ -9,12 +9,16 @@ const proxy = (handle) => {
       const options = await handle(ctx);
       const passThrough = new PassThrough();
       passThrough.writeHead = (statusCode, headers) => {
-        ctx.status = statusCode;
-        Object
-          .keys(headers)
-          .forEach((key) => {
-            ctx.set(key, headers[key]);
-          });
+        if (statusCode) {
+          ctx.status = statusCode;
+        }
+        if (_.isPlainObject(headers)) {
+          Object
+            .keys(headers)
+            .forEach((key) => {
+              ctx.set(key, headers[key]);
+            });
+        }
         passThrough.headersSent = true;
       };
       passThrough.socket = ctx.socket;
@@ -29,12 +33,16 @@ const proxy = (handle) => {
     return (ctx) => {
       const passThrough = new PassThrough();
       passThrough.writeHead = (statusCode, headers) => {
-        ctx.status = statusCode;
-        Object
-          .keys(headers)
-          .forEach((key) => {
-            ctx.set(key, headers[key]);
-          });
+        if (statusCode) {
+          ctx.status = statusCode;
+        }
+        if (_.isPlainObject(headers)) {
+          Object
+            .keys(headers)
+            .forEach((key) => {
+              ctx.set(key, headers[key]);
+            });
+        }
         passThrough.headersSent = true;
       };
       passThrough.socket = ctx.socket;
