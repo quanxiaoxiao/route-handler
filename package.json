@@ -1,6 +1,6 @@
 {
   "name": "@quanxiaoxiao/route-handler",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "",
   "keywords": [],
   "author": "",
@@ -13,7 +13,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@quanxiaoxiao/about-http": "0.0.7",
+    "@quanxiaoxiao/about-http": "0.0.8",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
