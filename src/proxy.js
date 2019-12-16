@@ -22,6 +22,9 @@ const proxy = (handle) => {
         passThrough.headersSent = true;
       };
       passThrough.socket = ctx.socket;
+      if (ctx.logger && ctx.logger.info) {
+        ctx.logger.info(`forward: ${options.url}`);
+      }
       httpForward({
         method: ctx.method,
         ...options,
@@ -46,10 +49,16 @@ const proxy = (handle) => {
         passThrough.headersSent = true;
       };
       passThrough.socket = ctx.socket;
+      const forwardHref = /^https?:\/\/[^/]+\//.test(handle)
+        ? `${handle}?${ctx.querystring}`
+        : `${handle}${ctx.path}?${ctx.querystring}`;
+
+      if (ctx.logger && ctx.logger.info) {
+        ctx.logger.info(`forward: ${forwardHref}`);
+      }
+
       httpForward({
-        url: /^https?:\/\/[^/]+\//.test(handle)
-          ? `${handle}?${ctx.querystring}`
-          : `${handle}${ctx.originalUrl}`,
+        url: forwardHref,
         body: ctx.req,
         headers: _.omit(ctx.headers, ['host', 'referer']),
         method: ctx.method,

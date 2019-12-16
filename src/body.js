@@ -7,7 +7,9 @@ const body = (handle) => async (ctx) => {
       if (typeof error.status === 'number' || typeof error.statusCode === 'number') {
         throw error;
       } else {
-        console.error(error);
+        if (ctx.logger && ctx.logger.error) {
+          ctx.logger.error(error);
+        }
         ctx.throw(500);
       }
     }
