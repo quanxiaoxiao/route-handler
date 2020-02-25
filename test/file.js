@@ -1,8 +1,8 @@
-import test from 'ava';
-import { Readable } from 'stream';
-import path from 'path';
-import createError from 'http-errors';
-import file from '../src/file';
+const path = require('path');
+const { Readable } = require('stream');
+const test = require('ava');
+const createError = require('http-errors');
+const file = require('../src/file');
 
 test('file', (t) => {
   const ctx = {

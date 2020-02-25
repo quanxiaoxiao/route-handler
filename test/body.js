@@ -1,9 +1,9 @@
-import test from 'ava';
-import fs from 'fs';
-import path from 'path';
-import { Readable } from 'stream';
-import createError from 'http-errors';
-import body from '../src/body';
+const fs = require('fs');
+const path = require('path');
+const { Readable } = require('stream');
+const test = require('ava');
+const createError = require('http-errors');
+const body = require('../src/body');
 
 
 test('body', async (t) => {

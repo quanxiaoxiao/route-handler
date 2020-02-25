@@ -23,7 +23,7 @@ const proxy = (handle) => {
       };
       passThrough.socket = ctx.socket;
       if (ctx.logger && ctx.logger.info) {
-        ctx.logger.info(`forward: ${options.url}`);
+        ctx.logger.info(`forward: [${ctx.method}] ${options.url}`);
       }
       httpForward({
         method: ctx.method,
@@ -54,7 +54,7 @@ const proxy = (handle) => {
         : `${handle}${ctx.path}?${ctx.querystring}`;
 
       if (ctx.logger && ctx.logger.info) {
-        ctx.logger.info(`forward: ${forwardHref}`);
+        ctx.logger.info(`forward: [${ctx.method}] ${forwardHref}`);
       }
 
       httpForward({
