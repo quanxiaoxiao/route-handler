@@ -4,13 +4,22 @@ const fs = require('fs');
 
 const file = (handle) => {
   const type = typeof handle;
+  const handler = (ctx, pathname) => {
+    if (!path.isAbsolute(pathname)) {
+      if (ctx.logger && ctx.logger.error) {
+        ctx.logger.error(`file pathname: ${pathname} is invalid`);
+      }
+      ctx.throw(500);
+    }
+    if (ctx.logger && ctx.logger.info) {
+      ctx.logger.info(`[FILE] -> ${pathname}`);
+    }
+    ctx.type = path.extname(pathname);
+    ctx.body = fs.createReadStream(pathname);
+  };
   if (type === 'string') {
     return (ctx) => {
-      if (!path.isAbsolute(handle)) {
-        ctx.throw(500, 'path is not absolute');
-      }
-      ctx.type = path.extname(handle);
-      ctx.body = fs.createReadStream(handle);
+      handler(ctx, handle);
     };
   }
   if (type === 'function') {
@@ -19,11 +28,7 @@ const file = (handle) => {
       if (!_.isString(pathname)) {
         ctx.throw(500);
       }
-      if (!path.isAbsolute(pathname)) {
-        ctx.throw(500, 'path is not absolute');
-      }
-      ctx.type = path.extname(pathname);
-      ctx.body = fs.createReadStream(pathname);
+      handler(ctx, pathname);
     };
   }
   return (ctx) => {
