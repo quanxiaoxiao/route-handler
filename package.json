@@ -1,6 +1,6 @@
 {
   "name": "@quanxiaoxiao/route-handler",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "keywords": [],
   "author": "",
@@ -8,6 +8,9 @@
   "main": "src/index.js",
   "scripts": {
     "test": "ava"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
     "@quanxiaoxiao/about-http": "0.0.14",
