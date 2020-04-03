@@ -19,6 +19,7 @@ const proxy = (handle) => {
   const type = typeof handle;
 
   const handler = (ctx, options) => {
+    const { path, method } = ctx;
     const passThrough = new PassThrough();
     passThrough.writeHead = (statusCode, headers) => {
       if (statusCode) {
@@ -35,7 +36,7 @@ const proxy = (handle) => {
     };
     passThrough.socket = ctx.socket;
     if (ctx.logger && ctx.logger.info) {
-      ctx.logger.info(`FORWARD -> [${options.method}] ${options.url}`);
+      ctx.logger.info(`[${method}] ${path} -> [${options.method}] ${options.url}`);
     }
 
     const start = Date.now();
@@ -50,7 +51,7 @@ const proxy = (handle) => {
     passThrough.end = (...args) => {
       onEnd.bind(passThrough)(...args);
       if (ctx.logger && ctx.logger.info) {
-        ctx.logger.info(`FORWARD <- [${options.method}] ${options.url} [${ctx.status || ''}] ${time(start)}`);
+        ctx.logger.info(`[${method}] ${path} <- [${options.method}] ${options.url} [${ctx.status || ''}] ${time(start)}`);
       }
     };
     ctx.body = passThrough;
@@ -68,8 +69,8 @@ const proxy = (handle) => {
 
   if (type === 'string') {
     return (ctx) => {
-      const forwardHref = /^https?:\/\/[^/]+\//.test(handle)
-        ? `${handle}?${ctx.querystring}`
+      const forwardHref = /^https?:\/\/[^/]+\//.test(handle) // eslint-disable-line
+        ? (handle.includes('?') ? handle : `${handle}?${ctx.querystring}`)
         : `${handle}${ctx.path}?${ctx.querystring}`;
       handler(ctx, {
         url: forwardHref,

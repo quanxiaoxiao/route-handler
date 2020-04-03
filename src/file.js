@@ -7,7 +7,7 @@ const file = (handle) => {
   const handler = (ctx, pathname) => {
     if (!path.isAbsolute(pathname)) {
       if (ctx.logger && ctx.logger.error) {
-        ctx.logger.error(`file pathname: ${pathname} is invalid`);
+        ctx.logger.error(`[FILE] -> ${pathname}`);
       }
       ctx.throw(500);
     }
