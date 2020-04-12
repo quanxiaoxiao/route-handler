@@ -1,6 +1,6 @@
 {
   "name": "@quanxiaoxiao/route-handler",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "",
   "keywords": [],
   "author": "",
@@ -13,11 +13,11 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
-    "@quanxiaoxiao/about-http": "0.0.15",
+    "@quanxiaoxiao/about-http": "0.0.17",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "ava": "^3.5.2",
+    "ava": "^3.6.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
