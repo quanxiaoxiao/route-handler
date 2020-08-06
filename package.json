@@ -1,6 +1,6 @@
 {
   "name": "@quanxiaoxiao/route-handler",
-  "version": "0.0.16",
+  "version": "0.0.19",
   "description": "",
   "keywords": [],
   "author": "",
@@ -14,17 +14,17 @@
   },
   "dependencies": {
     "@quanxiaoxiao/about-http": "0.0.19",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
-    "ava": "^3.8.2",
+    "ava": "^3.11.1",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.0.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.20.0",
-    "eslint-plugin-react-hooks": "^4.0.2",
-    "http-errors": "^1.7.3"
+    "eslint": "^7.6.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.5",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "http-errors": "^1.8.0"
   }
 }

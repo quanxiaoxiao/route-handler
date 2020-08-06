@@ -2,19 +2,6 @@ const _ = require('lodash');
 const { httpForward } = require('@quanxiaoxiao/about-http');
 const { PassThrough } = require('stream');
 
-const humanize = (n) => {
-  n = n.toString().split('.');
-  n[0] = n[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
-  return n.join('.');
-};
-
-const time = (start) => {
-  const delta = Date.now() - start;
-  return humanize(delta < 10000
-    ? `${delta}ms`
-    : `${Math.round(delta / 1000)}s`);
-};
-
 const proxy = (handle) => {
   const type = typeof handle;
 
@@ -51,7 +38,7 @@ const proxy = (handle) => {
     passThrough.end = (...args) => {
       onEnd.bind(passThrough)(...args);
       if (ctx.logger && ctx.logger.info) {
-        ctx.logger.info(`[${method}] ${path} <- [${options.method}] ${options.url} [${ctx.status || ''}] ${time(start)}`);
+        ctx.logger.info(`[${method}] ${path} <- [${options.method}] ${options.url} [${ctx.status || ''}] ${Date.now() - start}ms`);
       }
     };
     ctx.body = passThrough;
@@ -69,9 +56,17 @@ const proxy = (handle) => {
 
   if (type === 'string') {
     return (ctx) => {
-      const forwardHref = /^https?:\/\/[^/]+\//.test(handle) // eslint-disable-line
-        ? (handle.includes('?') ? handle : `${handle}?${ctx.querystring}`)
-        : `${handle}${ctx.path}?${ctx.querystring}`;
+      if (!/^https?:\/\//.test(handle)) {
+        ctx.throw(503);
+      }
+      let forwardHref = handle;
+      if (!forwardHref.includes('?')) {
+        if (!/^https?:\/\/[^/]+\//.test(forwardHref)) {
+          forwardHref = `${forwardHref}${ctx.path}?${ctx.querystring}`;
+        } else {
+          forwardHref = `${forwardHref}?${ctx.querystring}`;
+        }
+      }
       handler(ctx, {
         url: forwardHref,
         body: ctx.req,
