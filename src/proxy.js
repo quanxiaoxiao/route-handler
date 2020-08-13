@@ -70,7 +70,13 @@ const proxy = (handle) => {
       handler(ctx, {
         url: forwardHref,
         body: ctx.req,
-        headers: _.omit(ctx.headers, ['host', 'referer']),
+        headers: _.omit(ctx.headers, [
+          'host',
+          'referer',
+          'connection',
+          'proxy-authorization',
+          'upgrade',
+        ]),
         method: ctx.method,
       });
     };
