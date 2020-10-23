@@ -22,11 +22,10 @@ const proxy = (handle) => {
       passThrough.headersSent = true;
     };
     passThrough.socket = ctx.socket;
-    if (ctx.logger && ctx.logger.info) {
-      ctx.logger.info(`[${method}] ${path} -> [${options.method}] ${options.url}`);
-    }
 
-    const start = Date.now();
+    if (ctx.logger && ctx.logger.info) {
+      ctx.logger.info(`${path} \`${method}\` -> ${options.url} \`${options.method}\``);
+    }
 
     httpForward({
       ...options,
@@ -37,9 +36,6 @@ const proxy = (handle) => {
 
     passThrough.end = (...args) => {
       onEnd.bind(passThrough)(...args);
-      if (ctx.logger && ctx.logger.info) {
-        ctx.logger.info(`[${method}] ${path} <- [${options.method}] ${options.url} [${ctx.status || ''}] ${Date.now() - start}ms`);
-      }
     };
     ctx.body = passThrough;
   };
