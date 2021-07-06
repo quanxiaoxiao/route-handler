@@ -13,7 +13,7 @@ const file = (handle) => {
       const stats = fs.statSync(pathname);
       const hash = crypto
         .createHash('sha1')
-        .update(`${stats.size}_${stats.mtime.getTime()}`)
+        .update(`${pathname}_${stats.size}_${stats.mtime.getTime()}`)
         .digest('hex');
       if (ctx.get('if-none-match') === hash) {
         ctx.status = 304;
