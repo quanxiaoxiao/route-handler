@@ -9,14 +9,14 @@ const proxy = (handle) => {
     const { path, method } = ctx;
     const passThrough = new PassThrough();
     passThrough.writeHead = (statusCode, headers) => {
-      if (statusCode) {
+      if (statusCode != null) {
         ctx.status = statusCode;
       }
       if (_.isPlainObject(headers)) {
         Object
           .keys(headers)
           .forEach((key) => {
-            ctx.set(key, headers[key]);
+            ctx.set(key.trim(), headers[key]);
           });
       }
       passThrough.headersSent = true;
@@ -57,10 +57,12 @@ const proxy = (handle) => {
       }
       let forwardHref = handle;
       if (!forwardHref.includes('?')) {
+        const { querystring } = ctx;
         if (!/^https?:\/\/[^/]+\//.test(forwardHref)) {
-          forwardHref = `${forwardHref}${ctx.path}?${ctx.querystring}`;
-        } else {
-          forwardHref = `${forwardHref}?${ctx.querystring}`;
+          forwardHref = `${forwardHref}${ctx.path}`;
+        }
+        if (ctx.querystring !== '') {
+          forwardHref = `${forwardHref}?${querystring}`;
         }
       }
       handler(ctx, {
