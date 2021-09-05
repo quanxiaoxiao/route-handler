@@ -21,7 +21,9 @@ const proxy = (handle) => {
               try {
                 ctx.set(name, headers[key]);
               } catch (error) {
-                ctx.logger.error(`${path} \`${method}\` ${error.message}`);
+                if (ctx.logger && ctx.logger.error) {
+                  ctx.logger.error(`${path} \`${method}\` ${error.message}`);
+                }
               }
             }
           });
@@ -29,6 +31,12 @@ const proxy = (handle) => {
       passThrough.headersSent = true;
     };
     passThrough.socket = ctx.socket;
+
+    ctx.req.once('error', (error) => {
+      if (ctx.logger && ctx.logger.error) {
+        ctx.logger.error(`${path} \`${method}\` ${error.message}`);
+      }
+    });
 
     if (ctx.logger && ctx.logger.info) {
       ctx.logger.info(`${path} \`${method}\` -> ${options.url} \`${options.method}\``);
