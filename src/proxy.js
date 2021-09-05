@@ -16,7 +16,14 @@ const proxy = (handle) => {
         Object
           .keys(headers)
           .forEach((key) => {
-            ctx.set(key.trim(), headers[key]);
+            const name = key.trim();
+            if (name.toUpperCase() !== 'SERVER') {
+              try {
+                ctx.set(name, headers[key]);
+              } catch (error) {
+                ctx.logger.error(`${path} \`${method}\` ${error.message}`);
+              }
+            }
           });
       }
       passThrough.headersSent = true;
@@ -32,11 +39,6 @@ const proxy = (handle) => {
       logger: ctx.logger,
     }, passThrough);
 
-    const onEnd = passThrough.end;
-
-    passThrough.end = (...args) => {
-      onEnd.bind(passThrough)(...args);
-    };
     ctx.body = passThrough;
   };
 
