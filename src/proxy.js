@@ -1,3 +1,4 @@
+/* eslint no-use-before-define: 0 */
 const _ = require('lodash');
 const { httpForward } = require('@quanxiaoxiao/about-http');
 const { PassThrough } = require('stream');
@@ -32,11 +33,28 @@ const proxy = (handle) => {
     };
     passThrough.socket = ctx.socket;
 
-    ctx.req.once('error', (error) => {
-      if (ctx.logger && ctx.logger.error) {
-        ctx.logger.error(`${path} \`${method}\` ${error.message}`);
+    function handleReqClose() {
+      ctx.req.off('close', handleReqClose);
+      ctx.req.off('end', handleReqClose);
+      passThrough.off('close', handleClose);
+      passThrough.off('finish', handleClose);
+      if (!passThrough.writableEnded) {
+        passThrough.end();
       }
-    });
+    }
+
+    function handleClose() {
+      ctx.req.off('close', handleReqClose);
+      ctx.req.off('end', handleReqClose);
+      passThrough.off('close', handleClose);
+      passThrough.off('finish', handleClose);
+    }
+
+    ctx.req.once('close', handleReqClose);
+    ctx.req.once('end', handleReqClose);
+
+    passThrough.once('close', handleClose);
+    passThrough.once('finish', handleClose);
 
     if (ctx.logger && ctx.logger.info) {
       ctx.logger.info(`${path} \`${method}\` -> ${options.url} \`${options.method}\``);
