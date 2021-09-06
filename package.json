@@ -1,6 +1,6 @@
 {
   "name": "@quanxiaoxiao/route-handler",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "",
   "keywords": [],
   "author": "",
@@ -13,7 +13,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
-    "@quanxiaoxiao/about-http": "0.0.25",
+    "@quanxiaoxiao/about-http": "0.0.26",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

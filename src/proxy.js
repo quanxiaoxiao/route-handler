@@ -33,33 +33,11 @@ const proxy = (handle) => {
     };
     passThrough.socket = ctx.socket;
 
-    function handleReqClose() {
-      ctx.req.off('close', handleReqClose);
-      ctx.req.off('end', handleReqClose);
-      passThrough.off('close', handleClose);
-      passThrough.off('finish', handleClose);
-      if (!passThrough.writableEnded) {
-        passThrough.end();
-      }
-    }
-
-    function handleClose() {
-      ctx.req.off('close', handleReqClose);
-      ctx.req.off('end', handleReqClose);
-      passThrough.off('close', handleClose);
-      passThrough.off('finish', handleClose);
-    }
-
     ctx.req.once('error', (error) => {
       if (ctx.logger && ctx.logger.error) {
         ctx.logger.info(`${path} \`${method}\`, ${error.message}`);
       }
     });
-    ctx.req.once('close', handleReqClose);
-    ctx.req.once('end', handleReqClose);
-
-    passThrough.once('close', handleClose);
-    passThrough.once('finish', handleClose);
 
     if (ctx.logger && ctx.logger.info) {
       ctx.logger.info(`${path} \`${method}\` -> ${options.url} \`${options.method}\``);
