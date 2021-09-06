@@ -23,7 +23,7 @@ const proxy = (handle) => {
                 ctx.set(name, headers[key]);
               } catch (error) {
                 if (ctx.logger && ctx.logger.error) {
-                  ctx.logger.error(`${path} \`${method}\` ${error.message}`);
+                  ctx.logger.error(`${path} \`${method}\`, ${error.message}`);
                 }
               }
             }
@@ -50,6 +50,11 @@ const proxy = (handle) => {
       passThrough.off('finish', handleClose);
     }
 
+    ctx.req.once('error', (error) => {
+      if (ctx.logger && ctx.logger.error) {
+        ctx.logger.info(`${path} \`${method}\`, ${error.message}`);
+      }
+    });
     ctx.req.once('close', handleReqClose);
     ctx.req.once('end', handleReqClose);
 
