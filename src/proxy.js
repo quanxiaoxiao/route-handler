@@ -39,6 +39,12 @@ const proxy = (handle) => {
       }
     });
 
+    ctx.res.once('error', (error) => {
+      if (ctx.logger && ctx.logger.error) {
+        ctx.logger.info(`${path} \`${method}\`, ${error.message}`);
+      }
+    });
+
     if (ctx.logger && ctx.logger.info) {
       ctx.logger.info(`${path} \`${method}\` -> ${options.url} \`${options.method}\``);
     }
