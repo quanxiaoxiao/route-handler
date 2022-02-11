@@ -22,8 +22,11 @@ const proxy = (handle) => {
               try {
                 ctx.set(name, headers[key]);
               } catch (error) {
+                const errorMessage = `${path} [${method}] \`${error.message}\``;
                 if (ctx.logger && ctx.logger.error) {
-                  ctx.logger.error(`${path} \`${method}\`, ${error.message}`);
+                  ctx.logger.error(errorMessage);
+                } else {
+                  console.error(errorMessage);
                 }
               }
             }
@@ -35,7 +38,7 @@ const proxy = (handle) => {
     passThrough.socket = ctx.socket;
 
     if (ctx.logger && ctx.logger.info) {
-      ctx.logger.info(`${path} \`${method}\` -> ${options.url} \`${options.method}\``);
+      ctx.logger.info(`${path} [${method}] -> \`${options.url}@${options.method}\``);
     }
 
     httpForward({
@@ -49,6 +52,9 @@ const proxy = (handle) => {
   if (type === 'function') {
     return async (ctx) => {
       const options = await handle(ctx);
+      if (!_.isPlainObject(options)) {
+        ctx.throw(500);
+      }
       handler(ctx, {
         ...options,
         method: options.method || ctx.method,
