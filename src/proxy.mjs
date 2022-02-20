@@ -1,9 +1,9 @@
 /* eslint no-use-before-define: 0 */
-const _ = require('lodash');
-const { httpForward } = require('@quanxiaoxiao/about-http');
-const { PassThrough } = require('stream');
+import { PassThrough } from 'stream';
+import _ from 'lodash';
+import { httpForward } from '@quanxiaoxiao/about-http';
 
-const proxy = (handle) => {
+export default (handle) => {
   const type = typeof handle;
 
   const handler = (ctx, options) => {
@@ -95,5 +95,3 @@ const proxy = (handle) => {
     ctx.throw(500);
   };
 };
-
-module.exports = proxy;

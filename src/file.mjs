@@ -1,20 +1,27 @@
-const _ = require('lodash');
-const crypto = require('crypto');
-const path = require('path');
-const fs = require('fs');
+import crypto from 'crypto';
+import path from 'path';
+import fs from 'fs';
+import _ from 'lodash';
 
-const file = (handle) => {
+const calcHash = (pathname) => {
+  const stats = fs.statSync(pathname);
+  return crypto
+    .createHash('sha1')
+    .update(`${pathname}_${stats.size}_${stats.mtime.getTime()}`)
+    .digest('hex');
+};
+
+export default (handle) => {
   const type = typeof handle;
   const handler = (ctx, pathname) => {
     if (!path.isAbsolute(pathname)) {
+      if (ctx.logger && ctx.logger.warn) {
+        ctx.logger.warn(`pathname \`${pathname}\` invalid`);
+      }
       ctx.throw(404);
     }
     try {
-      const stats = fs.statSync(pathname);
-      const hash = crypto
-        .createHash('sha1')
-        .update(`${pathname}_${stats.size}_${stats.mtime.getTime()}`)
-        .digest('hex');
+      const hash = calcHash(pathname);
       if (ctx.get('if-none-match') === hash) {
         ctx.status = 304;
       } else {
@@ -44,5 +51,3 @@ const file = (handle) => {
     ctx.throw(500);
   };
 };
-
-module.exports = file;
