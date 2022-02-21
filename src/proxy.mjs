@@ -23,8 +23,8 @@ export default (handle) => {
                 ctx.set(name, headers[key]);
               } catch (error) {
                 const errorMessage = `${path} [${method}] \`${error.message}\``;
-                if (ctx.logger && ctx.logger.error) {
-                  ctx.logger.error(errorMessage);
+                if (ctx.logger && ctx.logger.warn) {
+                  ctx.logger.warn(errorMessage);
                 } else {
                   console.error(errorMessage);
                 }
@@ -55,6 +55,18 @@ export default (handle) => {
       if (!_.isPlainObject(options)) {
         ctx.throw(500);
       }
+      if (!options.url) {
+        if (ctx.logger && ctx.logger.warn) {
+          ctx.logger.warn('url is not set');
+        }
+        ctx.throw(500);
+      }
+      if (!/^https?:\/\//.test(options.url)) {
+        if (ctx.logger && ctx.logger.warn) {
+          ctx.logger.warn(`url \`${options.url}\` invalid`);
+        }
+        ctx.throw(500);
+      }
       handler(ctx, {
         ...options,
         method: options.method || ctx.method,
@@ -65,7 +77,10 @@ export default (handle) => {
   if (type === 'string') {
     return (ctx) => {
       if (!/^https?:\/\//.test(handle)) {
-        ctx.throw(503);
+        if (ctx.logger && ctx.logger.warn) {
+          ctx.logger.warn(`url \`${handle}\` invalid`);
+        }
+        ctx.throw(500);
       }
       let forwardHref = handle;
       if (!forwardHref.includes('?')) {

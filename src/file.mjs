@@ -42,6 +42,9 @@ export default (handle) => {
     return async (ctx) => {
       const pathname = await handle(ctx);
       if (!_.isString(pathname)) {
+        if (ctx.logger && ctx.logger.warn) {
+          ctx.logger.warn('pathname invalid');
+        }
         ctx.throw(500);
       }
       handler(ctx, pathname);
