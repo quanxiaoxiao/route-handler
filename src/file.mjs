@@ -25,7 +25,7 @@ export default (handle) => {
       if (ctx.get('if-none-match') === hash) {
         ctx.status = 304;
       } else {
-        ctx.set('if-none-match', hash);
+        ctx.set('etag', hash);
         ctx.type = path.extname(pathname);
         ctx.body = fs.createReadStream(pathname);
       }
